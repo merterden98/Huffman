@@ -16,7 +16,7 @@ class vEB():
         self.u <<=int(math.log2(u))
         
         if self.u > 2:
-            self.clusters = [0 for i in range(self.high(self.u) + 1)]
+            self.clusters = [None for i in range(self.high(self.u) + 1)]
             self.summary = vEB(self.high(u))
 
     def high(self, lookup):
@@ -27,6 +27,8 @@ class vEB():
 
         return lookup % math.ceil(math.sqrt(self.u))
 
+    def index(self, cluster, offset):
+        pass
 
     def member(self, lookup):
 
@@ -47,7 +49,48 @@ class vEB():
     def leaf_insert(self, val):
         self.max = val
         self.min = val
-        print("Here")
+
+    def index(self, high, offset):
+        return high * math.floor(math.sqrt(self.u)) + offset
+    
+    def successor(self, val):
+
+        #Smallest Substructure We Can Get
+        if self.u <= 2:
+            if val == 0 and self.max == 1:
+                return 1
+            else:
+                return None
+        
+        #We Reached the cluster and successor is that clusters min
+        elif self.min != None and val < self.min:
+            return self.min
+
+        else:
+            if self.clusters[self.high(val)] != None:
+                mLow = self.clusters[self.high(val)].max
+                print(mLow)
+                if mLow != None:
+                    #We are in correct cluster and need to find
+                    #offset in cluster
+                    if mLow > self.low(val):
+                        offset = self.clusters[self.high(val)].successor(self.low(val))
+                        return self.index(self.high(val), offset)
+
+            #We Have to go to a different cluster (Go Up)
+            else:
+
+                succcluster = self.summary.successor(self.high(val))
+
+                #Successor Doesn't Exist
+                if succcluster == None:
+                    return None
+                
+                else:
+                    #minimum of the next cluster
+                    offset = self.clusters[succcluster].min
+                    return self.index(succcluster, offset)
+
 
     def insert(self, val):
 
@@ -69,17 +112,14 @@ class vEB():
         #We Still Have to recurse into SubArrays
         if self.u > 2:
 
-            if self.clusters[j] == 0:
+            if self.clusters[j] == None:
                 self.clusters[j] = vEB(self.high(self.u))
             
             #Cluster Hasn't Been Accessed Before
             if self.clusters[j].min == None:
                 self.clusters[j].leaf_insert(i)
-                print("Inserting Into Summary")
                 self.summary.insert(j)
             else:
-                print("Going into Subcluster of Size {}".format(self.high(self.u)))
-                print("To index {}".format(i))
                 self.clusters[j].insert(i)    
 
 
