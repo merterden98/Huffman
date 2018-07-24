@@ -41,7 +41,7 @@ class vEB():
         
         else:
             #Cluster Was Never Initialized
-            if self.clusters[self.high(lookup)] == 0:
+            if self.clusters[self.high(lookup)] == None:
                 return False
 
             return self.clusters[self.high(lookup)].member(self.low(lookup))
@@ -69,7 +69,7 @@ class vEB():
         else:
             if self.clusters[self.high(val)] != None:
                 mLow = self.clusters[self.high(val)].max
-                print(mLow)
+                
                 if mLow != None:
                     #We are in correct cluster and need to find
                     #offset in cluster
@@ -108,7 +108,7 @@ class vEB():
 
         #This is the Index of the cluster
         j = self.high(val)
-        print(j)
+        
         #We Still Have to recurse into SubArrays
         if self.u > 2:
 
@@ -126,5 +126,49 @@ class vEB():
         if val > self.max:
             self.max = val
 
+    def delete(self, val):
+        #Only element in Tree
+        if self.min == self.max and self.min == val:
+            self.min = None
+            self.max = None
+            return
+        
+        #We found min value and need next minimum to replace it
+        if self.min == val:
+            if self.summary != None:
+                cluster_index = self.summary.min
+                element_index = self.clusters[cluster_index].min
+
+                val = self.index(cluster_index, element_index)
+                self.min = val
+        
+        #Finding What Cluster Element Belongs To
+        cluster_index = self.high(val)
+        element_index = self.low(val)
+
+        if self.clusters[cluster_index] == None:
+            return
+        
+        self.clusters[cluster_index].delete(element_index)
+
+        #if cluster is empty remove it from summary
+        if self.clusters[cluster_index].min == None:
+            self.summary.delete(cluster_index)
+
+        
+        if val == self.max:
+            
+            #if we delete max, min becomes new max
+            if self.summary.max == None:
+                self.max = self.min
+                return
+        
+        #Otherwise Max is next Max
+        cluster_index = self.summary.max
+        element_index = self.clusters[cluster_index].max
+        self.max = self.index(cluster_index, element_index)
+
+
+        
 
 ##Reference http://www-di.inf.puc-rio.br/~laber/vanEmdeBoas.pdf
