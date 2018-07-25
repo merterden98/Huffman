@@ -31,7 +31,7 @@ class xFast():
         self.u = u
         self.layers = [dict() for i in range(u)]
 
-        self.root = self.InternalNode(None)
+        self.root = self.InternalNode("Dummy")
 
 
         """"Testing Binary Values"""
@@ -47,6 +47,19 @@ class xFast():
             return node.right
         
         elif type(node) == self.InternalNode:
+
+            if node.val == "Dummy":
+                
+                if not bool(self.layers[self.u -1]):
+                    return None
+                
+                if 0 in self.layers[self.u - 1].keys():
+                    
+                    return self.layers[self.u -1][0].successor
+
+                if 1 in self.layers[self.u - 1].keys():
+                    return self.layers[self.u - 1][1].successor
+
             if node.successor != None:
                 return node.successor
         
@@ -66,6 +79,18 @@ class xFast():
         
         elif type(node) == self.InternalNode:
 
+            if node.val == "Dummy":
+                
+                if not bool(self.layers[self.u -1]):
+                    return None
+                
+                if 0 in self.layers[self.u - 1].keys():
+                    
+                    return self.layers[self.u -1][0].predecessor
+
+                if 1 in self.layers[self.u - 1].keys():
+                    return self.layers[self.u - 1][1].predecessor
+                
             #print("Internal Node Val", node.val)
             if  node.predecessor != None:
                 return node.predecessor
@@ -106,7 +131,7 @@ class xFast():
 
 
         if best == 0:
-            return None
+            return self.root
 
         print("Found {} on layer {}".format(val, best))
         return self.layers[best][s]   
@@ -122,7 +147,7 @@ class xFast():
         lP = self.predecessor(val)
         lnode = self.LeafNode(val, lP, lS)
 
-        print("Inserting Node With Value {}".format(lnode.val))
+        #print("Inserting Node With Value {}".format(lnode.val))
 
         if lP != None:
             print("Predecessor", lP.val)
@@ -148,17 +173,20 @@ class xFast():
         for i in range(self.u - 1):
             b = val >> i + 1
             
+            #print("On layer {}".format(i+1))
             if b not in self.layers[i+1].keys():
                 
                 tmpNode = self.InternalNode(b)
 
-                
+                #print("On Node {}".format(tmpNode.val))
                 if bits[self.u - 1 -i] == 0:
+                    
                     tmpNode.predecessor = lnode
                     tmpNode.successor = lnode.right
                     tmpNode.left = node
                 
                 if bits[self.u - 1 -i] == 1:
+                    
                     tmpNode.successor = lnode
                     tmpNode.predecessor = lnode.left
                     tmpNode.right = node
@@ -170,14 +198,26 @@ class xFast():
             #Node exists
             else:
                 tmpNode = self.layers[i+1][b]
-
+                
                 if bits[self.u - 1 -i] == 0:
+                    
                     tmpNode.left = node
-                    tmpNode.predecessor = tmpNode.left.successor
+                    if type(tmpNode.left) == self.LeafNode:
+                        tmpNode.predecessor = tmpNode.left
+                    
+                    else:
+                        tmpNode.predecessor = tmpNode.left.successor
                 
                 if bits[self.u - 1 -i] == 1:
+                    
                     tmpNode.right = node
-                    tmpNode.successor = tmpNode.right.predecessor
+                    if type(tmpNode.right) == self.LeafNode:
+                        
+                        tmpNode.successor = tmpNode.right
+                    
+                    else:
+                        tmpNode.successor = tmpNode.right.predecessor
+
 
                 
 
@@ -190,9 +230,9 @@ class xFast():
     
         
 
-x = xFast(4)
+x = xFast(3)
 
-x.insert(13)
-x.insert(15)
-x.insert(8)
-x.insert(7)
+x.insert(1)
+
+x.insert(4)
+#x.insert(5)
