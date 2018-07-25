@@ -36,16 +36,7 @@ class xFast():
 
         """"Testing Binary Values"""
 
-        # self.layers[1][0b010] = self.InternalNode(0b101)
-
-        # self.layers[2][0b00] = self.InternalNode(0b00)
-        # self.layers[2][0b01] = self.InternalNode(0b01)
-        # self.layers[2][0b10] = self.InternalNode(0b10)
-        # self.layers[2][0b11] = self.InternalNode(0b11)
-
-        # self.layers[3][0b0] = self.InternalNode(0b0)
-        # self.layers[3][0b1] = self.InternalNode(0b1)
-        
+       
     def successor(self, val):
 
         node = self.longestPrefix(val)
@@ -55,12 +46,12 @@ class xFast():
         if type(node) == self.LeafNode:
             return node.right
         
-        else:
+        elif type(node) == self.InternalNode:
             if node.successor != None:
                 return node.successor
         
             if node.predecessor != None:
-                return node.predecessor
+                return node.predecessor.right
 
         return None
 
@@ -75,23 +66,20 @@ class xFast():
         
         elif type(node) == self.InternalNode:
 
-            print(node.val)
+            #print("Internal Node Val", node.val)
             if  node.predecessor != None:
                 return node.predecessor
 
             if  node.successor != None:
-                return node.successor
+                #print("Successors Left", node.successor.left)
+                return node.successor.left
         
         return None
 
 
 
     def longestPrefix(self, val):
-        #Start to search 
 
-
-        #Doesn't Exist
- 
         best = 0
         
         bottom = 0
@@ -120,6 +108,7 @@ class xFast():
         if best == 0:
             return None
 
+        print("Found {} on layer {}".format(val, best))
         return self.layers[best][s]   
 
 
@@ -129,14 +118,32 @@ class xFast():
         if val in self.layers[0]:
             return
 
+        lS = self.successor(val)
+        lP = self.predecessor(val)
+        lnode = self.LeafNode(val, lP, lS)
 
-        node = self.LeafNode(val, self.predecessor(val), None)
+        print("Inserting Node With Value {}".format(lnode.val))
+
+        if lP != None:
+            print("Predecessor", lP.val)
+            lP.right = lnode
+            
+        if lS != None:
+            print("Successor", lS.val)
+            lS.left = lnode
+
         #print(node.left)
+        node = lnode
         self.layers[0][val] = node
-        nodeptr = self.root
+        
 
         bits = [1 if digit=='1' else 0 for digit in bin(val)[2:]]
 
+        extend = [0 for i in range(self.u - len(bits))]
+        
+        bits = extend + bits
+
+        
         
         for i in range(self.u - 1):
             b = val >> i + 1
@@ -147,11 +154,13 @@ class xFast():
 
                 
                 if bits[self.u - 1 -i] == 0:
-                    tmpNode.predecessor = node
+                    tmpNode.predecessor = lnode
+                    tmpNode.successor = lnode.right
                     tmpNode.left = node
                 
                 if bits[self.u - 1 -i] == 1:
-                    tmpNode.successor = node
+                    tmpNode.successor = lnode
+                    tmpNode.predecessor = lnode.left
                     tmpNode.right = node
 
                 self.layers[i+1][b] = tmpNode
@@ -162,18 +171,17 @@ class xFast():
             else:
                 tmpNode = self.layers[i+1][b]
 
-        #We Need To find successor
                 if bits[self.u - 1 -i] == 0:
                     tmpNode.left = node
-                    tmpNode.predecessor = node
+                    tmpNode.predecessor = tmpNode.left.successor
                 
                 if bits[self.u - 1 -i] == 1:
                     tmpNode.right = node
-                    tmpNode.successor = node
+                    tmpNode.successor = tmpNode.right.predecessor
 
-                node = tmpNode
                 
 
+        
     def print(self):
 
         for hashes in self.layers:
@@ -184,9 +192,7 @@ class xFast():
 
 x = xFast(4)
 
-x.insert(12)
 x.insert(13)
 x.insert(15)
-#x.print()
-
-#print(x.layers[1][6].successor.val)
+x.insert(8)
+x.insert(7)
