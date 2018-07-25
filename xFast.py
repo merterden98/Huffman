@@ -34,7 +34,7 @@ class xFast():
         self.root = self.InternalNode("Dummy")
 
 
-        """"Testing Binary Values"""
+        
 
        
     def successor(self, val):
@@ -64,6 +64,7 @@ class xFast():
                 return node.successor
         
             if node.predecessor != None:
+                
                 return node.predecessor.right
 
         return None
@@ -71,8 +72,6 @@ class xFast():
     def predecessor(self, val):
 
         node = self.longestPrefix(val)
-
-        
 
         if type(node) == self.LeafNode:
             return node.left
@@ -93,11 +92,13 @@ class xFast():
                 
             #print("Internal Node Val", node.val)
             if  node.predecessor != None:
+                #print("Successors Left", node.successor.left)
                 return node.predecessor
 
             if  node.successor != None:
-                #print("Successors Left", node.successor.left)
                 return node.successor.left
+
+            
         
         return None
 
@@ -158,8 +159,8 @@ class xFast():
             lS.left = lnode
 
         #print(node.left)
-        node = lnode
-        self.layers[0][val] = node
+        node = self.root
+        self.layers[0][val] = lnode
         
 
         bits = [1 if digit=='1' else 0 for digit in bin(val)[2:]]
@@ -167,59 +168,55 @@ class xFast():
         extend = [0 for i in range(self.u - len(bits))]
         
         bits = extend + bits
-
         
-        
-        for i in range(self.u - 1):
-            b = val >> i + 1
-            
-            #print("On layer {}".format(i+1))
-            if b not in self.layers[i+1].keys():
+        for i in range(len(bits) - 1):
+            #left or left  child exists
+            if (node.left != None and bits[i] == 0) or (node.right != None and bits[i] == 1):
                 
-                tmpNode = self.InternalNode(b)
+                if node.successor != None and node.successor == lS:
+                    node.successor = lnode
 
-                #print("On Node {}".format(tmpNode.val))
-                if bits[self.u - 1 -i] == 0:
+                if node.predecessor != None and node.predecessor == lP:
+                    node.predecessor = lnode
+
+                if bits[i] == 0:
                     
-                    tmpNode.predecessor = lnode
-                    tmpNode.successor = lnode.right
-                    tmpNode.left = node
-                
-                if bits[self.u - 1 -i] == 1:
+                    node = node.left
+
+                else:
                     
-                    tmpNode.successor = lnode
-                    tmpNode.predecessor = lnode.left
-                    tmpNode.right = node
+                    node = node.right
 
-                self.layers[i+1][b] = tmpNode
-
-                node = tmpNode
-            
-            #Node exists
             else:
-                tmpNode = self.layers[i+1][b]
-                
-                if bits[self.u - 1 -i] == 0:
-                    
-                    tmpNode.left = node
-                    if type(tmpNode.left) == self.LeafNode:
-                        tmpNode.predecessor = tmpNode.left
-                    
-                    else:
-                        tmpNode.predecessor = tmpNode.left.successor
-                
-                if bits[self.u - 1 -i] == 1:
-                    
-                    tmpNode.right = node
-                    if type(tmpNode.right) == self.LeafNode:
-                        
-                        tmpNode.successor = tmpNode.right
-                    
-                    else:
-                        tmpNode.successor = tmpNode.right.predecessor
+                tmpNode = self.InternalNode(val >> self.u - i - 1)
 
+                if bits[i+1] == 1:
+                    tmpNode.successor = lnode
+                if bits[i+1] == 0:
+                    tmpNode.predecessor = lnode
+
+                if bits[i] == 0:
+                    node.left = tmpNode
+                    node.successor = None
+
+                    if node.predecessor == None and node.right == None:
+                        node.predecessor = lnode
 
                 
+                
+                if bits[i] == 1:
+                    node.right = tmpNode
+                    node.predecessor = None
+
+                    if node.successor == None and node.left == None:
+                        node.successor = lnode
+            
+                node = tmpNode
+
+                self.layers[self.u - 1 - i][node.val] = node
+                
+                
+              
 
         
     def print(self):
@@ -234,5 +231,5 @@ x = xFast(3)
 
 x.insert(1)
 
-x.insert(4)
+#x.insert(4)
 #x.insert(5)
