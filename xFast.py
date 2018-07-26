@@ -1,5 +1,3 @@
-
-
 class xFast():
 
     #u is the universe size represented by 2^u -1
@@ -41,7 +39,7 @@ class xFast():
 
         node = self.longestPrefix(val)
 
-
+        
 
         if type(node) == self.LeafNode:
             return node.right
@@ -49,17 +47,16 @@ class xFast():
         elif type(node) == self.InternalNode:
 
             if node.val == "Dummy":
-                
                 if not bool(self.layers[self.u -1]):
                     return None
                 
-                if 0 in self.layers[self.u - 1].keys():
-                    
-                    return self.layers[self.u -1][0].successor
+                if 0 in self.layers[self.u - 1].keys() and val >> self.u -1 == 0:
+                    return self.layers[self.u -1][0].predecessor
 
-                if 1 in self.layers[self.u - 1].keys():
+                if 1 in self.layers[self.u - 1].keys() and val >> self.u -1 == 1:
                     return self.layers[self.u - 1][1].successor
 
+            
             if node.successor != None:
                 return node.successor
         
@@ -79,15 +76,14 @@ class xFast():
         elif type(node) == self.InternalNode:
 
             if node.val == "Dummy":
-                
                 if not bool(self.layers[self.u -1]):
                     return None
                 
-                if 0 in self.layers[self.u - 1].keys():
+                if 0 in self.layers[self.u - 1].keys() and val >> self.u -1 == 0:
                     
                     return self.layers[self.u -1][0].predecessor
 
-                if 1 in self.layers[self.u - 1].keys():
+                if 1 in self.layers[self.u - 1].keys() and val >> self.u -1 == 1:
                     return self.layers[self.u - 1][1].predecessor
                 
             #print("Internal Node Val", node.val)
@@ -106,6 +102,10 @@ class xFast():
 
     def longestPrefix(self, val):
 
+
+        if val in self.layers[0].keys():
+            return self.layers[0][val]
+        
         best = 0
         
         bottom = 0
@@ -119,9 +119,13 @@ class xFast():
 
         while bottom < top:
             
+            
             if s in self.layers[level].keys():
-                best = level
+
+                if level != 0:
+                    best = level
                 top = level
+                
             
             else:
 
@@ -134,7 +138,8 @@ class xFast():
         if best == 0:
             return self.root
 
-        print("Found {} on layer {}".format(val, best))
+        #print("Found {} on layer {}".format(val, best))
+        
         return self.layers[best][s]   
 
 
@@ -155,7 +160,7 @@ class xFast():
             lP.right = lnode
             
         if lS != None:
-            print("Successor", lS.val)
+            print("Successor",lS.val)
             lS.left = lnode
 
         #print(node.left)
@@ -215,7 +220,8 @@ class xFast():
 
                 self.layers[self.u - 1 - i][node.val] = node
                 
-                
+
+##TODO Implement Delete         
               
 
         
@@ -227,9 +233,5 @@ class xFast():
     
         
 
-x = xFast(3)
+x = xFast(5)
 
-x.insert(1)
-
-#x.insert(4)
-#x.insert(5)
