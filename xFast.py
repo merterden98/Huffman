@@ -1,7 +1,6 @@
 class xFast():
 
     #u is the universe size represented by 2^u -1
-    
     class InternalNode():
 
         def __init__(self, val):
@@ -138,8 +137,7 @@ class xFast():
         if best == 0:
             return self.root
 
-        #print("Found {} on layer {}".format(val, best))
-        
+  
         return self.layers[best][s]   
 
 
@@ -153,14 +151,11 @@ class xFast():
         lP = self.predecessor(val)
         lnode = self.LeafNode(val, lP, lS)
 
-        #print("Inserting Node With Value {}".format(lnode.val))
 
         if lP != None:
-            print("Predecessor", lP.val)
             lP.right = lnode
             
         if lS != None:
-            print("Successor",lS.val)
             lS.left = lnode
 
         #print(node.left)
@@ -223,7 +218,77 @@ class xFast():
 
 ##TODO Implement Delete         
               
+    def delete(self, val):
 
+        deletenode = True
+        deleted = False
+
+        if val not in self.layers[0].keys():
+            return
+        
+        for i in range(self.u):
+            
+            node = self.layers[i][val >> i]
+
+            #Leaf Node So Need to reconnect
+            if i == 0:
+                
+                leaf = node
+                nodel = node.left
+                noder = node.right
+
+                if nodel != None:
+                    nodel.right = noder
+                
+                if noder != None:
+                    noder.left = nodel
+                
+            #Internal Node Case
+            else:
+                
+                #previous node was a 0 child
+                if node.left == prevnode:
+                    
+                    if deleted == True:
+                        node.left = None
+
+                        
+                    
+                        #This node still has a right child
+                        if node.right != None:
+                            node.successor = noder
+                            deletenode = False
+                    
+                    if node.predecessor == leaf:
+                        node.predecessor = nodel
+
+                        
+
+                    #previous node was a 1 child
+                if node.right == prevnode: 
+                    if deleted == True:
+                        
+                        node.right = None
+                    #This node still has a left child
+                        if node.left != None:
+                            node.predecessor = nodel
+                            deletenode = False
+
+                    if node.successor == leaf:
+                        node.successor = noder
+
+
+            if deletenode == True:
+                self.layers[i].pop(val>>i, 'None')
+                deleted = True
+            
+            else:
+                deleted = False
+                
+
+            
+            prevnode = node
+            
         
     def print(self):
 
@@ -233,5 +298,5 @@ class xFast():
     
         
 
-x = xFast(5)
+
 
