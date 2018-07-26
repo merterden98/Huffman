@@ -30,9 +30,6 @@ class xFast():
 
         self.root = self.InternalNode("Dummy")
 
-
-        
-
        
     def successor(self, val):
 
