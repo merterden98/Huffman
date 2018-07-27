@@ -83,8 +83,8 @@ class Huffman():
     
     def makeCodes(self):
 
-        root = self.queue.get()     
-        self._make(root, '')
+        self.root = self.queue.get()     
+        self._make(self.root, '')
 
 
     def compress(self):
@@ -96,28 +96,166 @@ class Huffman():
 
         bray = bitarray()
 
+        outfile = self.filepath + ".cmp"
+        key = self.filepath + ".key"
+
+        print("Compress Table,", self.codes)
         with open(self.filepath, 'r') as f:
             
-            for lines in f:
-                for letter in lines:
-                     bray.extend(self.codes[letter])
-        
-
-        outfile = self.filepath + ".cmp"
+            for line in f:
+                for char in line:
+                    bray.extend(self.codes[char])
 
         with open(outfile, 'wb') as f:
+            
+            t = self.makeBitTree() 
             bray.tofile(f)
+
+
+        with open(key, 'w') as b:
+            b.write(t)
+        
+    def makeBitTree(self):
+
+        txt = []
+
+        self.bitHelp(self.root, txt)
+
+        l = ""
+
+        for word in txt:
+            l = l + word
+        
+        return l
+        
+        
+    
+    def bitHelp(self, node, txt):
+
+        for keys in self.codes.keys():
+            txt.append(self.codes[keys])
+            txt.append(keys)
 
         
 
+
+    def bitDecodeTree(self, txt):
+
+        if len(txt) == 0:
+            return
+
+        if txt.pop(0) == '1':
+            char = ""
+            for i in range(8):
+                if len(txt) > 0:
+                    char = char + txt.pop(0)
+                
+            print(char)
+            
+            return self.Node(0, 'a')
+            
+        else:
+            txt.pop(0)
+            left = self.bitDecodeTree(txt)
+            right = self.bitDecodeTree(txt)
+            node = self.Node(0, None)
+            node.right = right
+            node.left = left
+            return node
+        
+    
+    def decompress(self, keyfile, cmpfile):
+
+        decomp = {}
+        with open(keyfile, 'r') as f:
+            code = []
+            for line in f:
+                for letter in line:
+                    
+                    if letter == '0' or letter == '1':
+                        code.append(letter)
+                    
+                    else:
+                        c = ''.join(code)
+                        decomp[c] = letter
+                        code = []
+        
+        print("Decompress Table,",decomp)
+        root = self.makeDTree(decomp)
+        x = bitarray()     
+        tmp = root  
+        with open(cmpfile, 'rb') as f:
+
+            with open('decompress', 'w') as w:
+
+                x.fromfile(f)
+
+                for bits in x:
+                
+                    if bits == True:
+                        tmp = tmp.right
+
+                        if tmp == None:
+                            tmp = root
+                            pass
+
+                        if tmp.letter != None:
+                            w.write(tmp.letter)
+                            tmp = root
+                
+                    if bits == False:
+                        tmp = tmp.left
+                    
+                        if tmp == None:
+                            tmp = root
+                            pass
+
+                        if tmp.letter != None:
+                            w.write(tmp.letter)
+                            tmp = root
+
+            
+            
+
+
+                    
+
+
+    def makeDTree(self, decomp):
+
+        root = self.Node(None, None)
+        for keys in decomp:
+            node = root
+            for b in keys:
+                if b == '0':
+                    if node.left == None:
+                        tmp = self.Node(None, None)
+                        node.left = tmp
+                    node = node.left
+                if b == '1':
+                    if node.right == None:
+                        tmp = self.Node(None, None)
+                        node.right = tmp
+                    node = node.right
+            
+            node.letter = decomp[keys]
+        
+        return root
+                
+
+                
+
+            
+
+            
+            
 
 
 
 q = queue.PriorityQueue()
 
-H = Huffman("LargerFile", q)
+H = Huffman("Jane.txt", q)
 
 
 
 H.compress()
-
