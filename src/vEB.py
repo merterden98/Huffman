@@ -12,12 +12,66 @@ class vEB():
         self.max = None
         self.min = None
 
+        self.qs = 0
+        
+
         self.u = 1
         self.u <<=int(math.log2(u))
         
+        self.values = [0 for i in range(self.u)]
+
         if self.u > 2:
             self.clusters = [None for i in range(self.high(self.u) + 1)]
             self.summary = vEB(self.high(u))
+
+
+    def get(self):
+
+        #We Don't Need to Delete
+        tmp = self.values[self.min]
+
+        if tmp.next != None:
+            self.qs -= 1
+            
+            tmp = self.values[self.min]
+            self.values[self.min] = tmp.next
+            tmp.next = None
+            return tmp
+
+        else:
+            newMin = self.successor(self.min)
+            toReturn = self.values[self.min]
+            self.values[self.min] = 0
+            #print(f"Will Return {toReturn.letter} New Min {newMin}")
+            self.delete(self.min)
+
+            return toReturn
+
+        
+
+    def put(self, node):
+
+        if self.member(node.freq):
+            #print(f"Already Here normally would insert {node.letter}")
+
+            self.qs += 1
+            tmp = self.values[node.freq]
+
+            node.next = tmp
+
+            self.values[node.freq] = node
+            
+            
+
+
+        else:
+            self.insert(node.freq)
+            self.values[node.freq] = node
+
+
+    def qsize(self):
+        return self.qs
+
 
     def high(self, lookup):
 
@@ -94,6 +148,8 @@ class vEB():
 
     def insert(self, val):
 
+        self.qs += 1
+
         if self.min == None:
             self.leaf_insert(val)
             return
@@ -127,6 +183,8 @@ class vEB():
             self.max = val
 
     def delete(self, val):
+        
+        self.qs -= 1
         #Only element in Tree
         if self.min == self.max and self.min == val:
             self.min = None

@@ -1,6 +1,7 @@
 import queue
 from yFast import yFast
 from bitarray import bitarray
+from vEB import vEB
 
 
 class Huffman():
@@ -259,10 +260,14 @@ class Huffman():
 
 
 
-q = queue.PriorityQueue()
+#q = queue.PriorityQueue()
 
-q = yFast(15)
+#q = yFast(15)
+
+q = vEB(16)
 
 H = Huffman("hello", q)
 
-H.compress()
+H.getfrequencies()
+H.makeInitialNodes()
+
