@@ -1,4 +1,5 @@
 import queue
+from yFast import yFast
 from bitarray import bitarray
 
 
@@ -13,6 +14,7 @@ class Huffman():
             self.freq = freq
             self.right = None
             self.left = None
+            self.next = None
 
         def __lt__(self, other):
 
@@ -40,6 +42,12 @@ class Huffman():
                         self.frequencies[letter] += 1
 
             
+            print(self.frequencies)
+            
+                
+
+
+            
 
     
     def makeInitialNodes(self):
@@ -47,11 +55,11 @@ class Huffman():
         for letters in self.frequencies:
             node = self.Node(self.frequencies[letters], letters)
             self.nodes.append(node)
+            #print("Placing Node")
             self.queue.put(node)
 
     def makeTree(self):
 
-        
         while(self.queue.qsize() > 1):
             
             n1 = self.queue.get()
@@ -98,7 +106,7 @@ class Huffman():
         outfile = self.filepath + ".cmp"
         key = self.filepath + ".key"
 
-        print("Compress Table,", self.codes)
+
         with open(self.filepath, 'r') as f:
             
             for line in f:
@@ -253,8 +261,8 @@ class Huffman():
 
 q = queue.PriorityQueue()
 
-H = Huffman("Jane.txt", q)
+q = yFast(15)
 
-
+H = Huffman("hello", q)
 
 H.compress()

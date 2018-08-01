@@ -33,28 +33,57 @@ class yFast():
 
         self.subtrees = [{} for i in range(self.log + 1)]
 
+        self.qs = 0
+
         
-    def extract_min(self):
+    def qsize(self):
+
+        return self.qs
+
+    def get(self):
         
-        print("Old Min,", self.min)
+        
         temp = self.min
 
-        self.delete(temp)
+        print("Will Return ", temp.letter)
 
-        self.min = self.successor(temp)
+        p = self.delete(temp.freq)
+
+        
+
+        if p == True:
+
+            self.min = temp.next
+
+        else:
+            print("Need To find Successor")
+            print("temp val:", temp.freq)
+            mn, index = self.successor(temp.freq)
+            print(self.subtrees)
+            print(mn, index)
+
+            if mn == None or index == None:
+                self.min = None
+                return temp
+
+            self.min = self.subtrees[index][mn]
         
         return temp
 
 
     def successor(self, search):
 
-        logSearch = search - 1
+        print(f"Finding Successor {search}")
+        logSearch = search
         s = self.summary.successor(logSearch)
 
         if s is not None:
 
-            subtreeIndex = int(math.log2(s.val))
+            subtreeIndex =  math.floor(s.val / math.log2(self.size))
+
             
+    
+
             succ = s.val
 
             for items in self.subtrees[subtreeIndex].keys():
@@ -62,14 +91,23 @@ class yFast():
                 if items > search and items < succ:
                     succ = items
 
-            return succ
+
+            print("Successor: ", succ)
+            return succ, subtreeIndex
         
         else:
-            return None  
+            return None, None 
         
 
-    
-    def insert(self, val):
+    def put(self, node):
+
+        self.insert(node, node.freq)
+
+
+
+    def insert(self, val, key):
+
+        #print(f"Value {val}, Key {key}")
 
         if self.min == None:
             self.min = val
@@ -78,35 +116,65 @@ class yFast():
             if val < self.min:
                 self.min = val
 
-        logSearch = val
+        logSearch = key - 1
+
+
         s = self.summary.successor(logSearch)
 
         
         
         if s is None:
-            self.summary.insert(logSearch)
+            self.summary.insert(key)
             #print(f"Inserted {logSearch} into Summary")
-            
-            s = int(math.log2(logSearch))
-        
-        else:
-            lg = int(math.log2(s.val))
-            s = lg
+
+            if key > 1:
+                s = math.floor(key / math.log2(self.size))
+
+            else:
+                s = 0
+
+            print("S", s)
         
 
-        self.subtrees[s][val] = val
+        else:
+            if logSearch <= 1:
+                s = 0
+            else:
+                lg = math.floor(s.val / math.log2(self.size))
+                s = lg
+        
+
+       
+        if key in self.subtrees[s]:
+           # print(f"Val {val.letter} in {s}")
+            tmp = self.subtrees[s][key]
+
+            while tmp.next != None:
+                #print(f"Adding to {tmp.letter}")
+                tmp = tmp.next
+            
+            tmp.next = val
+            self.qs += 1
+            return
+
+        
+
+        self.subtrees[s][key] = val
 
         if len(self.subtrees[s]) > 2*self.log:
             l = []
-
-            for items in self.subtrees[s].values():
-                if items < val:
-                    l.append(items)
             
-            l.append(val)
+
+            for keys, values in self.subtrees[s]:
+                if keys < key:
+                    l.append((keys, values))
+            
+            l.append((key, val))
+
+            print(l)
 
             for pops in l:
-                self.subtrees[s].pop(pops)
+                self.subtrees[s].pop(pops[0])
 
 
 
@@ -114,15 +182,15 @@ class yFast():
 
             
 
-            self.summary.insert(m)
+            self.summary.insert(m[0])
 
-            mlog = int(math.log2(m))
+            mlog =  math.floor(m / math.log2(self.size))
             
             for items in l:
                 self.subtrees[mlog][items] = items
 
         
-        print(self.subtrees)
+        self.qs += 1
 
 
     def delete(self, val):
@@ -134,13 +202,27 @@ class yFast():
 
         if s is not None:
 
-            s = int(math.log2(s.val))
+            s = math.floor(val / math.log2(self.size))
+
+            print(s)
             
-            self.subtrees[s].pop(val)
+            if self.subtrees[s][val].next == None:
+                self.subtrees[s].pop(val)
+                rt = False
+
+            else:
+
+                self.subtrees[s][val] = self.subtrees[s][val].next
+                rt = True
 
             if len(self.subtrees[s]) == 0:
                 self.summary.delete(val)
         
+
+
+            self.qs -= 1
+
+            return rt
         else:
             pass
             
@@ -196,17 +278,3 @@ class yFast():
             return tmpL, tmp
 
 
-y = yFast(15)
-
-y.insert(9)
-y.insert(6)
-y.insert(7)
-y.insert(5)
-y.insert(4)
-y.insert(8)
-y.insert(3)
-y.insert(1)
-y.insert(2)
-
-
-        
