@@ -45,7 +45,7 @@ class yFast():
         
         temp = self.min
 
-        print("Will Return ", temp.letter)
+        #print("Will Return ", temp.letter)
 
         p = self.delete(temp.freq)
 
@@ -56,11 +56,11 @@ class yFast():
             self.min = temp.next
 
         else:
-            print("Need To find Successor")
-            print("temp val:", temp.freq)
+            #print("Need To find Successor")
+            #print("temp val:", temp.freq)
             mn, index = self.successor(temp.freq)
-            print(self.subtrees)
-            print(mn, index)
+            #print(self.subtrees)
+            #print(mn, index)
 
             if mn == None or index == None:
                 self.min = None
@@ -73,7 +73,7 @@ class yFast():
 
     def successor(self, search):
 
-        print(f"Finding Successor {search}")
+        #print(f"Finding Successor {search}")
         logSearch = search
         s = self.summary.successor(logSearch)
 
@@ -92,7 +92,7 @@ class yFast():
                     succ = items
 
 
-            print("Successor: ", succ)
+            #print("Successor: ", succ)
             return succ, subtreeIndex
         
         else:
@@ -133,7 +133,7 @@ class yFast():
             else:
                 s = 0
 
-            print("S", s)
+            #print("S", s)
         
 
         else:
@@ -204,7 +204,7 @@ class yFast():
 
             s = math.floor(val / math.log2(self.size))
 
-            print(s)
+           # print(s)
             
             if self.subtrees[s][val].next == None:
                 self.subtrees[s].pop(val)

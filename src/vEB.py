@@ -15,6 +15,8 @@ class vEB():
         self.qs = 0
         
 
+        self.summary = None
+        self.clusters = None
         self.u = 1
         self.u <<=int(math.log2(u))
         
@@ -28,7 +30,13 @@ class vEB():
     def get(self):
 
         #We Don't Need to Delete
+
+        if self.min == None:
+            return None
+
         tmp = self.values[self.min]
+
+        self.qs -= 1
 
         if tmp.next != None:
             self.qs -= 1
@@ -51,10 +59,12 @@ class vEB():
 
     def put(self, node):
 
+        self.qs += 1
+
         if self.member(node.freq):
             #print(f"Already Here normally would insert {node.letter}")
 
-            self.qs += 1
+
             tmp = self.values[node.freq]
 
             node.next = tmp
@@ -105,6 +115,7 @@ class vEB():
         self.min = val
 
     def index(self, high, offset):
+
         return high * math.floor(math.sqrt(self.u)) + offset
     
     def successor(self, val):
@@ -148,7 +159,7 @@ class vEB():
 
     def insert(self, val):
 
-        self.qs += 1
+        
 
         if self.min == None:
             self.leaf_insert(val)
@@ -182,7 +193,7 @@ class vEB():
         if val > self.max:
             self.max = val
 
-    def delete(self, val):
+    def deleteOrg(self, val):
         
         self.qs -= 1
         #Only element in Tree
@@ -190,10 +201,13 @@ class vEB():
             self.min = None
             self.max = None
             return
-        
+
+
+                
         #We found min value and need next minimum to replace it
         if self.min == val:
-            if self.summary != None:
+
+            if self.summary != None and self.summary.min != None:
                 cluster_index = self.summary.min
                 element_index = self.clusters[cluster_index].min
 
@@ -203,6 +217,9 @@ class vEB():
         #Finding What Cluster Element Belongs To
         cluster_index = self.high(val)
         element_index = self.low(val)
+
+        if self.clusters == None:
+            return
 
         if self.clusters[cluster_index] == None:
             return
@@ -226,6 +243,45 @@ class vEB():
         element_index = self.clusters[cluster_index].max
         self.max = self.index(cluster_index, element_index)
 
+
+    def delete(self, val):
+
+        
+
+        if self.min is None or val < self.min:
+            return
+        
+        
+
+        if val == self.min:
+            if self.summary is None or self.summary.min is None:
+                self.min = self.max = None
+                return
+            cluster_index = self.summary.min
+            element_index = self.clusters[cluster_index].min
+
+        
+            val = self.min = self.index(cluster_index, element_index)
+
+        cluster_index = self.high(val)
+        element_index = self.low(val)
+        cluster = self.clusters[cluster_index]
+        
+        if cluster is None:
+            return
+
+        cluster.delete(element_index)
+
+        if cluster.min is None:
+            self.summary.delete(cluster_index)
+
+        if val == self.max:
+            if self.summary.max is None:
+                self.max = self.min
+            else:
+                cluster_index = self.summary.max
+                element_index = self.clusters[cluster_index].max
+                self.max = self.index(cluster_index, element_index)
 
         
 
