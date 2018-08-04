@@ -21,7 +21,7 @@ class Huffman():
 
             return self.freq < other.freq
 
-    def __init__(self, filepath, queue):
+    def __init__(self, queue, filepath=None):
         #TODO Open File and count letters.
 
         self.queue = queue
@@ -43,7 +43,7 @@ class Huffman():
                         self.frequencies[letter] += 1
 
             
-            print(self.frequencies)
+            #print(self.frequencies)
             
                 
 
@@ -105,7 +105,7 @@ class Huffman():
         bray = bitarray()
 
         outfile = self.filepath + ".cmp"
-        key = self.filepath + ".key"
+        key = '.' + self.filepath + ".key"
 
 
         with open(self.filepath, 'r') as f:
@@ -172,9 +172,11 @@ class Huffman():
             return node
         
     
-    def decompress(self, keyfile, cmpfile):
+    def decompress(self, cmpfile):
 
         decomp = {}
+        keyfile = "." + cmpfile[:len(cmpfile)-3] + 'key'
+
         with open(keyfile, 'r') as f:
             code = []
             for line in f:
@@ -188,13 +190,15 @@ class Huffman():
                         decomp[c] = letter
                         code = []
         
-        print("Decompress Table,",decomp)
+        #print("Decompress Table,",decomp)
         root = self.makeDTree(decomp)
         x = bitarray()     
         tmp = root  
+
+        d = cmpfile[:len(cmpfile)-3] + "txt"
         with open(cmpfile, 'rb') as f:
 
-            with open('decompress', 'w') as w:
+            with open(d, 'w') as w:
 
                 x.fromfile(f)
 
@@ -223,10 +227,7 @@ class Huffman():
                             tmp = root
 
             
-            
-
-
-                    
+                       
 
 
     def makeDTree(self, decomp):
@@ -252,22 +253,4 @@ class Huffman():
                 
 
                 
-
-            
-
-            
-            
-
-
-
-#q = queue.PriorityQueue()
-
-#q = yFast(15)
-
-q = vEB(16)
-
-H = Huffman("hello", q)
-
-H.getfrequencies()
-H.makeInitialNodes()
 

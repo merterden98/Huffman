@@ -1,0 +1,199 @@
+
+body {
+    background-color:rgb(41, 37, 37);
+}
+
+.img-base {
+
+    opacity : 1;
+    display : none;
+
+}
+
+.sticky {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 10;
+  }
+
+
+
+.enjoy {
+
+
+	padding : 20px;
+	background : rgb(0, 0, 20);
+	opacity: 1;
+	color: #eee;
+	font-family: Garamond;
+	box-shadow: -15px -15px rgb(255, 69, 0, 0.5), 20px 15px rgb(230, 30, 10, 0.5);		
+
+}
+
+.enjoydemo {
+
+
+	padding : 20px;
+	background : #d6d6d6;
+	opacity: 1;
+	color: #eee;
+	font-family: Garamond;
+	box-shadow: -15px -15px rgb(255, 69, 0, 0.5), 20px 15px rgb(230, 30, 10, 0.5);		
+
+}
+.enjoydemo1 {
+
+
+	padding : 20px;
+	background : #d6d6d6;
+	margin-bottom: 2em;
+	opacity: 1;
+	color: #eee;
+	font-family: Garamond;
+	box-shadow: -15px -15px rgb(255, 69, 0, 0.5), 20px 15px rgb(230, 30, 10, 0.5);		
+
+}
+
+.lineDiv{
+
+
+	display:block;
+	position: absolute;
+	content:'';
+	bottom: 30px;
+	width: 140px;
+	height: 2px;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+	background: #000000;
+	box-shadow: 0 30px 0 #000000;
+
+}
+
+.space{
+
+	margin-top:  20em;
+	margin-bottom : 30em;
+	
+	
+
+}
+
+
+
+
+.contained {
+	width: auto;
+	height: auto;
+	margin: 140px auto;
+	padding: 120px 60px;
+	background-color: #efefef;
+	overflow: auto;
+	opacity: 1;
+	filter: alpha(opacity=100);
+	-webkit-transition: opacity 0.3s ease-out;
+	-moz-transition: opacity 0.3s ease-in-out;
+	-ms-transition: opacity 0.3s ease-in-out;
+	-o-transition: opacity 0.3s ease-in-out;
+	transition: opacity 0.3s ease-in-out;
+	position: relative
+}
+
+
+.upper-margin{
+
+
+	margin-top: 40em;
+
+}
+
+
+.info-margin{
+
+	margin-top: 20em;
+
+}
+
+.info-margin2{
+
+	margin-top: 10em;
+
+}
+
+.info-lower{
+
+	margin-bottom: 10em;
+
+}
+
+.formbox{
+
+	background: #eee;
+	width: 300px;
+	height: 300px;
+
+}
+
+
+.just{
+
+	justify-content: center;
+
+
+}
+
+.widthJ{
+
+	width: 50%;
+}
+
+.network {
+ 
+	display:auto;
+   
+	width:auto;
+   
+	height:700px;
+   
+	
+   
+
+	justify-content: center;
+	
+	background-color: rgb(0,0,0, 0);
+
+	
+   
+}
+
+.Compress{
+
+	margin-top: 2em;
+	margin-bottom: 3em;
+
+	font-size: auto;
+	font-family: Garamond;
+	color: rgb(0, 0, 20);
+
+}
+
+
+.Compress1{
+
+	font-size: 3em;
+	font-family: Garamond;
+	color: white;
+
+}
+
+
+
+.demoIntro{
+
+
+	margin-bottom: 2em;
+	
+
+}

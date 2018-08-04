@@ -1,0 +1,63 @@
+###Speeding Up Huffman Coding Via Predecessor Data Structures
+
+#The src files contain the python implementations of Huffman Coding
+#huffman web contains the Django source files used to create the website
+#@huffman.heroku.com/main/home
+
+###Usage
+
+The usage of this module requires importing the Huffman
+library.
+
+A Huffman Class instance is declared Via:
+
+>H = Huffman(QueueType, FilePath)
+
+To compress
+
+>H.compress()
+
+This will create a .cmp file likely 40-70% smaller than the
+original file.
+
+To decompress
+
+>H.decompress()
+
+If filepath was specified as a .cmp file, the file will
+be decompressed to a .txt file. 
+
+Decompress and Compress both utilize the initial filepath
+and thus new instances of Huffman need to be declared in order
+to Compress and Decompress.
+
+###The Queue Types implemented are:
+
+##van Emde Boas Trees (vEB)
+
+##x-Fast Tries (xFast)
+
+##y-Fast Tries (yFast)
+
+Instances of these objects are declared by
+
+>v = vEB(Universe_Size)
+
+>x = xFast(Universe_Size)
+
+>y = yFast(Universe_Size)
+
+The vEB and yFast classes have implemented get, put
+and qsize functions; however are designed for use 
+for Huffman Nodes.
+
+I will likely make them polymorphic later.
+
+
+vEB, xFast and yFast also all have insert, delete,
+successor functions implemented.
+
+~~~To Anyone Reading Have a Great Day~~~
+
+
+

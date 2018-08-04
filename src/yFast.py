@@ -171,7 +171,7 @@ class yFast():
             
             l.append((key, val))
 
-            print(l)
+           # print(l)
 
             for pops in l:
                 self.subtrees[s].pop(pops[0])

@@ -55,17 +55,23 @@ class Huffman():
             self.nodes.append(node)
             #print("Placing Node")
             self.queue.put(node)
-        
-        
 
     def makeTree(self):
 
         while(self.queue.qsize() > 1):
+
+            print(self.queue.qsize())
+
             
             n1 = self.queue.get()
             n2 = self.queue.get()
 
-            parent = self.Node(n1.freq + n2.freq, None)
+            if n2 == None and n1 == None:
+                parent = self.Node(None, None)
+            
+            else:
+                parent = self.Node(n1.freq +  n2.freq, None)
+            
             parent.left = n1
             parent.right = n2
             self.queue.put(parent)
@@ -93,6 +99,8 @@ class Huffman():
         self.root = self.queue.get()     
         self._make(self.root, '')
 
+        #print(self.codes)
+
 
     def compressWeb(self):
         self.getfrequencies()
@@ -105,7 +113,9 @@ class Huffman():
         for char in self.text:
             bray.extend(self.codes[char])
 
-        return str(bray.tobytes()), self.codes 
+        return str(bray.tobytes()), self.codes
+
+ 
 
     def compress(self):
 
@@ -200,7 +210,7 @@ class Huffman():
                         decomp[c] = letter
                         code = []
         
-        print("Decompress Table,",decomp)
+        #print("Decompress Table,",decomp)
         root = self.makeDTree(decomp)
         x = bitarray()     
         tmp = root  
@@ -276,7 +286,7 @@ class Huffman():
 
 #q = yFast(15)
 
-q = vEB(16)
+q = vEB(256)
 
 H = Huffman("Hello World", q)
 

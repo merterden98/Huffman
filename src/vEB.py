@@ -31,15 +31,23 @@ class vEB():
 
         #We Don't Need to Delete
 
+        self.qs -= 1
+
         if self.min == None:
             return None
 
+
         tmp = self.values[self.min]
 
-        self.qs -= 1
+  
+        if tmp == 0:
+            return
+        
+        
+
 
         if tmp.next != None:
-            self.qs -= 1
+            
             
             tmp = self.values[self.min]
             self.values[self.min] = tmp.next
@@ -61,6 +69,7 @@ class vEB():
 
         self.qs += 1
 
+        #print(f"placing {node.freq}")
         if self.member(node.freq):
             #print(f"Already Here normally would insert {node.letter}")
 
